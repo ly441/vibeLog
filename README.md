@@ -1,3 +1,4 @@
 # vibeLog
 
-it about logging in moods and music according to what you are feeling....
+A Flask-based API for managing users, music moods, and user ratings.
+
