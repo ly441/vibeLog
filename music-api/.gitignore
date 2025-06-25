@@ -1,5 +1,14 @@
 
 
+env/
+migrations/
+pipefile/
+pipefile.lock/
+__pycache__/
+.venv/
+.vscode/
+
+
 .env/
 .migrations/
 .pipefile/
@@ -10,19 +19,19 @@ pipefile/
 pipefile.lock/
 
 __pycache__/
-=======
 
-.env/
+
+
 .migrations/
 .pipefile/
 .pipefile.lock/
-=======
+
 env/
 migrations/
 pipefile/
 pipefile.lock/
 
-=======
+
 __pycache__/
 
 
