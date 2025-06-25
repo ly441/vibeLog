@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from server.models.song import Song
+from server.models.songs import Song
 from server.models.music import Music
 from server import db
 from flask_jwt_extended import jwt_required
