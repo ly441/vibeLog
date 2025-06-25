@@ -1,13 +1,29 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from server.models.music import Music
-from server import db
-
+from server.db.database import db
 from services.spotify_service import SpotifyService
+
+spotify = SpotifyService
+
+#from services.spotify_service import SpotifyService
 
 
 
 music_bp = Blueprint('music', __name__)
+
+@music_bp.route('/track/<track_id>', methods=["GET"])
+def get_track_info(track_id):
+    try:
+        track_data = spotify.get_track(track_id)
+        return jsonify({
+            "name": track_data["name"],
+            "artist": track_data["artists"][0]["name"],
+            "album": track_data["album"]["name"],
+            "preview_url": track_data.get("preview_url"),
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @music_bp.route('/music', methods=['GET'])
 @jwt_required()
@@ -32,7 +48,7 @@ def search_music():
     
     if not local_results:
         # Fall back to Spotify if no local results
-        spotify_results = SpotifyService.search_track(query)
+        spotify_results = Spotify.search_track(query)
         return jsonify(spotify_results), 200
     
     return jsonify([{
