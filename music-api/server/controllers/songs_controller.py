@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from server.models.songs import Song
 from server.models.music import Music
-from server import db
+from server.db.database import db
 from flask_jwt_extended import jwt_required
 
 songs_bp = Blueprint('songs', __name__)
