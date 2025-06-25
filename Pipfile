@@ -16,7 +16,6 @@ gevent = "==24.2.1"
 greenlet = "==3.1.1"
 idna = "==3.10"
 pysocks = "==1.7.1"
-requests = "==2.32.4"
 requests-file = "==2.1.0"
 tldextract = "==5.1.2"
 urllib3 = "==2.2.3"
@@ -24,6 +23,8 @@ urllib3 = "==2.2.3"
 "zope.interface" = "==7.2"
 flask-cors = "*"
 psycopg2-binary = "*"
+requests = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
