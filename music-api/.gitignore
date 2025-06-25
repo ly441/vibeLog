@@ -1,4 +1,5 @@
 
+
 env/
 migrations/
 pipefile/
@@ -32,6 +33,5 @@ pipefile.lock/
 
 
 __pycache__/
-
 
 

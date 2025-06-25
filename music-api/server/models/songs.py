@@ -16,6 +16,7 @@ class Song(db.Model):
     spotify_id = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    
     db.relationship('Music', backref='songs', lazy=True)
     db.relationship('Mood', backref='songs', lazy=True)
     db.relationship('Genre', backref='songs', lazy=True)
