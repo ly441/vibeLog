@@ -1,4 +1,6 @@
-from server import db
+#from server import db
+from server.db.database import db
+
 
 class Artist(db.Model):
     __tablename__ = 'artists'
