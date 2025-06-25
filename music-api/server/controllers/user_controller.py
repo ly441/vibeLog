@@ -5,7 +5,7 @@ from server.db.database import db
 
 users_bp = Blueprint('users', __name__)
 
-@users_bp.route('', methods=['POST'])
+@users_bp.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
 
