@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from server.config import Config
 from server.db.database import db
 from flask_cors import CORS
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -22,14 +23,14 @@ def create_app(config_class=Config):
     # Register blueprints - ADD ALL CONTROLLERS HERE
     from server.controllers.auth_controller import auth_bp
     from server.controllers.mood_controller import mood_bp
-    from server.controllers.song_controller import song_bp
+    from server.controllers.user_controller import user_bp
     from server.controllers.artist_controller import artist_bp
     from server.controllers.genre_controller import genre_bp
     from server.controllers.music_controller import music_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(mood_bp)
-    app.register_blueprint(song_bp)
+    app.register_blueprint(user_bp)
     app.register_blueprint(artist_bp)
     app.register_blueprint(genre_bp)
     app.register_blueprint(music_bp)

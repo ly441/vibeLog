@@ -4,7 +4,12 @@ from server.models import User, Mood, Genre, Artist, Music, Song
 from faker import Faker
 import random
 from datetime import datetime, timedelta
+
+
 from server.services.spotify_service import SpotifyService
+=======
+
+from services.spotify_service import SpotifyService
 
 fake = Faker()
 
