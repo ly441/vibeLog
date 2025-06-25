@@ -1,3 +1,9 @@
+
 # vibeLog
 
-it about logging in moods and music according to what you are feeling,we are going to use spotify as our reference
+it about logging in moods and music according to what you are feeling,we are going to use spotify as our reference...
+
+
+
+
+
