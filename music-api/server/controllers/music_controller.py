@@ -2,7 +2,15 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from server.models import Music, Artist, Genre
 from server import db
+
+
+from server.services.spotify_service import SpotifyService
+=======
 from services.spotify_service import SpotifyService
+
+
+from services.spotify_service import SpotifyService
+
 
 music_bp = Blueprint('music', __name__)
 

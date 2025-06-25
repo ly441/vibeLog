@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from server.config import Config
 from server.db.database import db
 from flask_cors import CORS
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
