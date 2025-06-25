@@ -1,7 +1,12 @@
 # server/seed.py
 from server.db.database import db
 from server.app import create_app
-from server.models import User, Mood, Genre, Artist, Music, Song
+from server.models.user import User
+from server.models.mood import Mood
+from server.models.genre import Genre
+from server.models.artist import Artist
+from server.models.music import Music
+from server.models.songs import Song
 from faker import Faker
 import random
 from datetime import datetime, timedelta
