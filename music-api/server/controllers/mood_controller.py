@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.models.mood import Mood
+
 from server.models.songs import Song
 from server.models.music import Music
+
 from server.db.database import db
 
 mood_bp = Blueprint('mood', __name__)

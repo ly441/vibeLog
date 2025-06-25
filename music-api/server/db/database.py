@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 def init_db(app):
@@ -6,3 +7,13 @@ def init_db(app):
     with app.app_context():
 
         db.create_all()  
+=======
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+def init_db(app):
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+>>>>>>> e16babb1668bce9834f848431db992379ff2b4fb

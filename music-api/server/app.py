@@ -1,14 +1,21 @@
+from pathlib import Path
+from dotenv import load_dotenv
+import os
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from server.config import Config
-from server.db.database import db
+from server.db.database import db, init_db
 from flask_cors import CORS
+
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    
+    # Register blueprints - ADD ALL CONTROLLERS HERE
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt = JWTManager(app)
@@ -17,6 +24,8 @@ def create_app(config_class=Config):
     # Initialize the database
     with app.app_context():
         db.create_all()
+
+    
 
     # Register blueprints - ADD ALL CONTROLLERS HERE
     from server.controllers.auth_controller import auth_bp
