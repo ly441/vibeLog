@@ -2,6 +2,9 @@ import os
 import base64
 import requests
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
+load_dotenv
 
 class SpotifyAPI:
     def __init__(self):

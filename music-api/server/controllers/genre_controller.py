@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from server.models import Genre
+from server.models.genre import Genre
 from server import db
 
 genre_bp = Blueprint('genre', __name__)

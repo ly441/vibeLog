@@ -1,5 +1,9 @@
-from server import db
+#from server import db
+from server.db.database import db
+
 from werkzeug.security import generate_password_hash, check_password_hash
+from server.db.database import db
+
 
 class User(db.Model):
     __tablename__ = 'users'
