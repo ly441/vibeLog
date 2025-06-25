@@ -1,4 +1,4 @@
-from server import db
+from server.db.database import db
 
 class Genre(db.Model):
     __tablename__ = 'genres'
