@@ -17,6 +17,7 @@ def create_app(config_class=Config):
     # Initialize the database
     
     
+    
     # Register blueprints - ADD ALL CONTROLLERS HERE
     from server.controllers.auth_controller import auth_bp
     from server.controllers.mood_controller import mood_bp
