@@ -4,6 +4,26 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask-migrate = "*"
+flask-jwt-extended = "*"
+certifi = "==2025.6.15"
+charset-normalizer = "==3.4.2"
+colorama = "==0.4.6"
+cors = "==1.0.1"
+filelock = "==3.16.1"
+future = "==1.0.0"
+gevent = "==24.2.1"
+greenlet = "==3.1.1"
+idna = "==3.10"
+pysocks = "==1.7.1"
+requests = "==2.32.4"
+requests-file = "==2.1.0"
+tldextract = "==5.1.2"
+urllib3 = "==2.2.3"
+"zope.event" = "==5.0"
+"zope.interface" = "==7.2"
+flask-cors = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
