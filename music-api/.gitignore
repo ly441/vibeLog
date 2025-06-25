@@ -3,3 +3,5 @@ migrations/
 pipefile/
 pipefile.lock/
 __pycache__/
+.venv/
+.vscode/
