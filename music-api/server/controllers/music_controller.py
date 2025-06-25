@@ -9,6 +9,7 @@ from services.spotify_service import SpotifyService
 music_bp = Blueprint('music', __name__)
 artist_bp = Blueprint('artist', __name__)
 genre_bp = Blueprint('genre', __name__)
+SpotifyService_bp = Blueprint('spotify_service', __name__)
 
 @music_bp.route('/music', methods=['GET'])
 @jwt_required()
@@ -62,7 +63,7 @@ def get_genres():
         'name': g.name
     } for g in genres]), 200
 
-@SpotifyService.route('/spotify/search', methods=['GET'])
+@SpotifyService_bp.route('/spotify/search', methods=['GET'])
 @jwt_required()
 def search_spotify():
     query = request.args.get('q')

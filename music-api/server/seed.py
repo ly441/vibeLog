@@ -57,7 +57,10 @@ def seed_music(artists, genres):
     
     music = []
     for query in search_queries:
-        results = SpotifyService.search_track(query)
+        spotify = SpotifyService()
+        results = spotify.search_track(query)
+        if not results:
+            continue
         for track in results['tracks'][:2]:  # Get first 2 tracks per query
             artist = next((a for a in artists if a.name in [ar['name'] for ar in track['artists']]), None)
             if not artist:
