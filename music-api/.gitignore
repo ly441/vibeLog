@@ -1,11 +1,11 @@
-<<<<<<< HEAD
+
 .env/
 .migrations/
 .pipefile/
 .pipefile.lock/
-=======
 env/
 migrations/
 pipefile/
 pipefile.lock/
->>>>>>> 80cc47b1eecb1f9826c6246d3280edef70292fbb
+
+__pycache__/
