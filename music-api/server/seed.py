@@ -14,6 +14,7 @@ from services.spotify_service import SpotifyService
 
 fake = Faker()
 
+
 def seed_users(count=5):
     users = []
     for _ in range(count):
@@ -23,84 +24,88 @@ def seed_users(count=5):
         )
         user.set_password('password123')
         users.append(user)
+    
+    db.session.add_all(users)
+    db.session.commit()  # Commit to save users and generate IDs
+
     return users
 
-def seed_genres():
-    genres = [
-        Genre(name='Pop'),
-        Genre(name='Rock'),
-        Genre(name='Hip Hop'),
-        Genre(name='Electronic'),
-        Genre(name='Jazz')
-    ]
+
+
+def seed_genres(count=5):
+    genres = []
+    for _ in range(count):
+        genre = Genre(name=fake.unique.word().capitalize())
+        genres.append(genre)
+    
+    db.session.add_all(genres)
+    db.session.commit()
     return genres
 
-def seed_artists():
-    # Get real artists from Spotify
-    spotify_artists = [
-        'The Beatles', 'Taylor Swift', 'Kendrick Lamar',
-        'Daft Punk', 'Miles Davis'
-    ]
-    
+
+
+def seed_artists(count=5):
     artists = []
-    for name in spotify_artists:
-        artist = Artist(name=name)
-        # In a real app, you'd look up the Spotify ID here
+    for _ in range(count):
+        artist = Artist(name=fake.unique.name())
         artists.append(artist)
+
+    db.session.add_all(artists)
+    db.session.commit()
     return artists
 
-def seed_music(artists, genres):
-    # Get real tracks from Spotify
-    search_queries = [
-        'Happy', 'Sad', 'Energetic', 'Calm', 'Angry'
-    ]
-    
-    music = []
-    for query in search_queries:
-        spotify = SpotifyService()
-        results = spotify.search_track(query)
-        if not results:
-            continue
-        for track in results['tracks'][:2]:  # Get first 2 tracks per query
-            artist = next((a for a in artists if a.name in [ar['name'] for ar in track['artists']]), None)
-            if not artist:
-                continue
-                
-            music.append(Music(
-                title=track['name'],
-                duration=track['duration_ms'] // 1000,
-                release_date=track['album']['release_date'],
-                artist_id=artist.id,
-                genre_id=random.choice([g.id for g in genres]),
-                spotify_id=track['id']
-            ))
-    return music
 
-def seed_moods(users):
-    mood_names = ['Happy', 'Sad', 'Energetic', 'Calm', 'Angry']
+def seed_moods(users, count=10):
     moods = []
-    for user in users:
-        for name in mood_names:
-            moods.append(Mood(
-                user_id=user.id,
-                name=name,
-                intensity=random.randint(1, 10),
-                description=fake.sentence(),
-                created_at=fake.date_time_between(start_date='-30d', end_date='now')
-            ))
+    for _ in range(count):
+        mood = Mood(
+            name=fake.word().capitalize(),  # Random mood name
+            intensity=random.randint(1, 10),  # Random intensity between 1-10
+            description=fake.sentence(nb_words=5),
+            user_id=random.choice(users).id
+        )
+        moods.append(mood)
     return moods
 
-def seed_songs(moods, music):
+    
+
+def seed_songs(music, moods, genres, artists, count=20):
     songs = []
-    for mood in moods:
-        # Assign 1-3 random songs to each mood
-        for _ in range(random.randint(1, 3)):
-            song_music = random.choice(music)
-            songs.append(Song(
-                mood_id=mood.id,
-                music_id=song_music.id
-            ))
+    for _ in range(count):
+        song = Song(
+            title=fake.sentence(nb_words=3).rstrip("."),  # Random song title
+            duration=random.randint(120, 360),  # Duration in seconds (2 to 6 minutes)
+            music_id=random.choice(music).id if music else None,
+            mood_id=random.choice(moods).id if moods else None,
+            genre_id=random.choice(genres).id if genres else None,
+            artist_id=random.choice(artists).id if artists else None,
+            spotify_id=fake.uuid4(),  # Random UUID as a fake Spotify ID
+        )
+
+        # Only add if required fields are not None
+        if song.title and song.genre_id and song.artist_id:
+            songs.append(song)
     return songs
+
+
+
+
+
+
+def seed_music(artists, genres, count=10):
+    musics = []
+    for _ in range(count):
+        music = Music(
+            title=fake.sentence(nb_words=3).rstrip('.'),
+            duration=random.randint(120, 360),
+            release_date=fake.date_this_decade(),
+            artist_id=random.choice(artists).id,
+            genre_id=random.choice(genres).id,
+            spotify_id=fake.uuid4().replace('-', '')[:22]  # Simulating Spotify IDs
+        )
+        musics.append(music)
+    return musics
+
 
 def seed_database():
     app = create_app()
@@ -125,12 +130,15 @@ def seed_database():
         music = seed_music(artists, genres)
         db.session.add_all(music)
         
+        
         print("Seeding moods...")
         moods = seed_moods(users)
         db.session.add_all(moods)
+        db.session.commit()
+
         
         print("Seeding songs...")
-        songs = seed_songs(moods, music)
+        songs = seed_songs(moods, music, genres, artists)
         db.session.add_all(songs)
         
         db.session.commit()
