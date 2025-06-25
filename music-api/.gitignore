@@ -1,4 +1,4 @@
-.env/
-.migrations/
-.pipefile/
-.pipefile.lock/
+env/
+migrations/
+pipefile/
+pipefile.lock/
