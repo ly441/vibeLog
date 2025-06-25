@@ -1,17 +1,25 @@
 # server/seed.py
-from server import create_app, db
-from server.models import User, Mood, Genre, Artist, Music, Song
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from server.app import create_app
+from server.db.database import db
+from server.models.user import User
+from server.models.mood import Mood
+from server.models.genre import Genre
+from server.models.artist import Artist
+from server.models.music import Music
+from server.models.songs import Song
 from faker import Faker
 import random
 from datetime import datetime, timedelta
 
 
-from server.services.spotify_service import SpotifyService
-=======
-
 from services.spotify_service import SpotifyService
 
 fake = Faker()
+spotify = SpotifyService()
 
 def seed_users(count=5):
     users = []
@@ -49,28 +57,42 @@ def seed_artists():
     return artists
 
 def seed_music(artists, genres):
-    # Get real tracks from Spotify
-    search_queries = [
-        'Happy', 'Sad', 'Energetic', 'Calm', 'Angry'
-    ]
-    
+    from services.spotify_service import SpotifyService
+    spotify = SpotifyService()
+
+    search_queries = ['Happy', 'Sad', 'Energetic', 'Calm', 'Angry']
     music = []
+
     for query in search_queries:
-        results = SpotifyService.search_track(query)
-        for track in results['tracks'][:2]:  # Get first 2 tracks per query
-            artist = next((a for a in artists if a.name in [ar['name'] for ar in track['artists']]), None)
+        print(f"Searching for spotify tracks with query: {query}")
+        results = spotify.search_track(query)
+        print(f"Found {len(results)} tracks for query '{query}'")
+
+        for track in results[:2]:
+            print(f"Track: {track['name']} by {[a['name'] for a in track['artists']]}")
+            artist_name = track['artists'][0]['name']
+            artist = next((a for a in artists if a.name == artist_name), None)
             if not artist:
-                continue
-                
-            music.append(Music(
+                artist = Artist(name=artist_name)
+                db.session.add(artist)
+                db.session.flush()
+                artists.append(artist)
+
+            music_track = Music(
                 title=track['name'],
                 duration=track['duration_ms'] // 1000,
                 release_date=track['album']['release_date'],
                 artist_id=artist.id,
                 genre_id=random.choice([g.id for g in genres]),
                 spotify_id=track['id']
-            ))
+            )
+            db.session.add(music_track)
+            db.session.flush()  #ensures music_track.id is populated
+            music.append(music_track)
+
+    print(f"Total music tracks seeded: {len(music)}")
     return music
+
 
 def seed_moods(users):
     mood_names = ['Happy', 'Sad', 'Energetic', 'Calm', 'Angry']
@@ -87,16 +109,28 @@ def seed_moods(users):
     return moods
 
 def seed_songs(moods, music):
+    print("Seeding songs...")
     songs = []
-    for mood in moods:
-        # Assign 1-3 random songs to each mood
-        for _ in range(random.randint(1, 3)):
-            song_music = random.choice(music)
-            songs.append(Song(
-                mood_id=mood.id,
-                music_id=song_music.id
-            ))
-    return songs
+
+    for music_item in music:
+        if not music_item or not music_item.title:
+            print("Skipping invalid music item:", music_item)
+            continue  # skip empty or invalid entries
+
+        song = Song(
+            title=music_item.title,
+            duration=music_item.duration,
+            artist_id=music_item.artist_id,
+            genre_id=music_item.genre_id,
+            mood_id=random.choice(moods).id,
+            spotify_id=music_item.spotify_id,
+            music_id=music_item.id
+        )
+        songs.append(song)
+
+    print(f"Total songs prepared for insert: {len(songs)}")
+    return songs  # <-- make sure to return this
+
 
 def seed_database():
     app = create_app()
