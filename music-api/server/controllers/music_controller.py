@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from server.models import Music, Artist, Genre
+from server.models.music import Music
+from server.models.artist import Artist
+from server.models.genre import  Genre
 from server import db
 from services.spotify_service import SpotifyService
 

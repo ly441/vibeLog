@@ -43,7 +43,7 @@ def create_app(config_class=Config):
     app.register_blueprint(genre_bp)
     app.register_blueprint(songs_bp)
     app.register_blueprint(music_bp)
-    app.register_blueprint(songs_bp)
+    
     
     # ADD ERROR HANDLERS
     @app.errorhandler(404)
