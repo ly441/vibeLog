@@ -1,5 +1,6 @@
 # server/seed.py
-from server import create_app, db
+from server.db.database import db
+from server.app import create_app
 from server.models import User, Mood, Genre, Artist, Music, Song
 from faker import Faker
 import random
