@@ -14,10 +14,8 @@ def create_app(config_class=Config):
     jwt = JWTManager(app)
     CORS(app)
 
-    # Register blueprints - ADD ALL CONTROLLERS HERE
-    db.init_app(app)
-    migrate = Migrate(app, db)
-    jwt = JWTManager(app)
+    # Initialize the database
+    
     
     # Register blueprints - ADD ALL CONTROLLERS HERE
     from server.controllers.auth_controller import auth_bp
