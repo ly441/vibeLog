@@ -20,7 +20,13 @@ def create_app(config_class=Config):
     migrate = Migrate(app, db)
     jwt = JWTManager(app)
     CORS(app)
+
+    # Initialize the database
+    with app.app_context():
+        db.create_all()
+
     
+
     # Register blueprints - ADD ALL CONTROLLERS HERE
     from server.controllers.auth_controller import auth_bp
     from server.controllers.mood_controller import mood_bp
@@ -28,13 +34,16 @@ def create_app(config_class=Config):
     from server.controllers.artist_controller import artist_bp
     from server.controllers.genre_controller import genre_bp
     from server.controllers.music_controller import music_bp
+    from server.controllers.songs_controller import songs_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(mood_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(artist_bp)
     app.register_blueprint(genre_bp)
+    app.register_blueprint(songs_bp)
     app.register_blueprint(music_bp)
+    
     
     # ADD ERROR HANDLERS
     @app.errorhandler(404)
