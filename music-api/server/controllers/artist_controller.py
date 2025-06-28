@@ -12,5 +12,16 @@ def get_artists():
     return jsonify([{
         'id': a.id,
         'name': a.name,
-        'spotify_id': a.spotify_id
+        'spotify_id': a.spotify_id,
+        'image_url': a.image_url
     } for a in artists]), 200
+
+@artist_bp.route('/artists/<int:id>', methods=['GET'])
+def get_artist(id):
+    artist = Artist.query.get_or_404(id)
+    return jsonify({
+        'id': artist.id,
+        'name': artist.name,
+        'spotify_id': artist.spotify_id,
+        'image_url': artist.image_url
+    }), 200

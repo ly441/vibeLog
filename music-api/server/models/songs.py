@@ -13,6 +13,8 @@ class Song(db.Model):
     genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'))
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
     spotify_id = db.Column(db.String(100))
+    preview_url = db.Column(db.String)
+    image_url = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     

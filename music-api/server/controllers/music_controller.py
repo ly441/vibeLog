@@ -8,8 +8,6 @@ spotify = SpotifyService
 
 #from services.spotify_service import SpotifyService
 
-
-
 music_bp = Blueprint('music', __name__)
 
 @music_bp.route('/track/<track_id>', methods=["GET"])
@@ -48,7 +46,7 @@ def search_music():
     
     if not local_results:
         # Fall back to Spotify if no local results
-        spotify_results = Spotify.search_track(query)
+        spotify_results = spotify.search_track(query)
         return jsonify(spotify_results), 200
     
     return jsonify([{
