@@ -1,0 +1,22 @@
+.genre-page {
+  padding: 2rem;
+  text-align: center;
+}
+
+.genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.genre-card {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  min-width: 120px;
+  text-transform: capitalize;
+}

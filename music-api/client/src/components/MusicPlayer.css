@@ -1,0 +1,26 @@
+/* src/components/MusicPlayer.css */
+
+.music-player {
+  background-color: #1f1f1f;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  color: #ffffff;
+}
+
+.music-player ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.music-player li {
+  margin: 0.5rem 0;
+  background-color: #2c2c2c;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.music-player audio {
+  width: 100%;
+  margin-top: 0.25rem;
+}

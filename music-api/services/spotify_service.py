@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 
 
 
+
 load_dotenv()
+
 
 
 env_path = Path(__file__).resolve().parent.parent / '.env'
@@ -21,11 +23,12 @@ class SpotifyService:
         self.client_id = os.getenv('SPOTIFY_CLIENT_ID')
         self.client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
 
-        print("SPOTIFY_CLIENT_ID =",self.client_id)
+        print("SPOTIFY_CLIENT_ID =", self.client_id)
         print("SPOTIFY_CLIENT_SECRET =", self.client_secret)
 
         self.access_token = None
         self.token_expiry = None
+
 
         # Debug print to verify environment variables
         print(f"SPOTIFY_CLIENT_ID: {self.client_id}")
@@ -33,6 +36,8 @@ class SpotifyService:
 
         if not self.client_id or not self.client_secret:
             raise ValueError("Missing Spotify Client ID or Secret. Check your .env file.")
+
+
 
     def _get_auth_header(self):
         if not self.access_token or datetime.now() > self.token_expiry:
@@ -49,7 +54,10 @@ class SpotifyService:
         }
         data = {'grant_type': 'client_credentials'}
 
+
         print("Requesting token from Spotify...")
+
+
         response = requests.post(
             'https://accounts.spotify.com/api/token',
             headers=headers,
@@ -72,18 +80,18 @@ class SpotifyService:
         )
         response.raise_for_status()
         return response.json()
-    
-    def search_track(self,query):
+
+    def search_track(self, query):
         headers = self._get_auth_header()
         params = {
-            'q' : query,
+            'q': query,
             'type': 'track',
             'limit': 5
         }
         response = requests.get(
             'https://api.spotify.com/v1/search',
-            headers = headers,
-            params = params
+            headers=headers,
+            params=params
         )
         response.raise_for_status()
         return response.json()['tracks']['items']
@@ -107,4 +115,21 @@ if __name__ == '__main__':
     spotify = SpotifyService()
     track = spotify.get_track('11dFghVXANMlKmJXsNCbNl')
     print(track['name'])
+
+
+    def search_artist(self, name):
+        headers = self._get_auth_header()
+        params = {
+            'q': name,
+            'type': 'artist',
+            'limit': 1
+        }
+        response = requests.get(
+            'https://api.spotify.com/v1/search',
+            headers=headers,
+            params=params
+        )
+        response.raise_for_status()
+        artists = response.json().get('artists', {}).get('items', [])
+        return artists[0] if artists else None
 
