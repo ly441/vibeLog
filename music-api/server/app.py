@@ -5,7 +5,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from server.config import Config
-from server.db.database import db, init_db
+from server.db.database import db
 from flask_cors import CORS
 
 env_path = Path(__file__).resolve().parent.parent / '.env'
@@ -29,6 +29,7 @@ def create_app(config_class=Config):
     from server.controllers.genre_controller import genre_bp
     from server.controllers.music_controller import music_bp
     from server.controllers.songs_controller import songs_bp
+
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(mood_bp)

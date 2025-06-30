@@ -21,7 +21,9 @@ def get_moods():
         'description': m.description,
         'created_at': m.created_at.isoformat(),
         'song_count': len(m.songs)
-    } for m in moods]), 200
+
+    } for m in moods
+    ]), 200
 
 
 @mood_bp.route('/moods', methods=['POST'])
@@ -58,22 +60,25 @@ def toggle_mood():
 @jwt_required()
 def add_song_to_user_mood(mood_id):
     user_id = get_jwt_identity()
-    mood = Mood.query.filter_by(id=mood_id, user_id=user_id).first()
-    if not mood:
-        return jsonify({'error': 'Mood not found'}), 404
 
+    #get mood owned by user
+    
+
+    #get song from the request
+    mood = Mood.query.get(mood_id)
     data = request.get_json()
     song_id = data.get('song_id')
     song = Song.query.get(song_id)
 
-    if not song:
-        return jsonify({'error': 'Song not found'}), 404
+    if not mood or not song:
+        return jsonify({"error": "Mood or Song not found"}), 404
 
     if song not in mood.songs:
         mood.songs.append(song)
         db.session.commit()
 
-    return jsonify({'message': f'Song added to {mood.name} mood'}), 200
+        return jsonify({"message": "Song added", "song_id": song.id, "mood_id": mood.id})
+   
 
 
 # GET all songs under a mood
@@ -81,6 +86,7 @@ def add_song_to_user_mood(mood_id):
 @jwt_required()
 def get_songs_for_mood(mood_id):
     user_id = get_jwt_identity()
+    #print("User ID from JWT:", user_id)
     mood = Mood.query.filter_by(id=mood_id, user_id=user_id).first()
     if not mood:
         return jsonify({'error': 'Mood not found'}), 404
@@ -92,10 +98,12 @@ def get_songs_for_mood(mood_id):
             'duration': song.duration,
             'preview_url': song.preview_url,
             'image_url': song.image_url
+
         } for song in mood.songs
+        
     ]), 200
 
-
+#
 # DELETE song from mood
 @mood_bp.route('/moods/<int:mood_id>/songs/<int:song_id>', methods=['DELETE'])
 @jwt_required()

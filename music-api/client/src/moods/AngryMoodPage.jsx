@@ -21,7 +21,7 @@ const AngryMoodPage = () => {
         const angry = moods.find((m) => m.name === "angry");
 
         if (angry) {
-          setMoodId(happy.id);
+          setMoodId(angry.id);
         } else {
           setError("angry mood not found");
         }

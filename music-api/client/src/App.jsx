@@ -23,13 +23,14 @@ import MoodyMoodPage from "./moods/MoodyMoodPage";
 import UpbeatMoodPage from "./moods/UpbeatMoodPage";
 import ReflectiveMoodPage from "./moods/ReflectiveMoodPage";
 
+const PRESET_MOODS = [
+  "Happy", "Sad", "Energetic", "Calm", "Angry",
+  "Romantic", "Moody", "Chill", "Upbeat", "Reflective"
+];
+
 const fetchWithToken = async (url, setter) => {
   const token = localStorage.getItem("token");
-
-  if (!token) {
-    console.warn("No token found in localStorage.");
-    return;
-  }
+  if (!token) return;
 
   try {
     const res = await fetch(url, {
@@ -50,6 +51,37 @@ const fetchWithToken = async (url, setter) => {
   }
 };
 
+const seedMoodsIfMissing = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("http://localhost:5000/moods", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) return;
+
+    const moods = await res.json();
+    const existing = moods.map((m) => m.name.toLowerCase());
+
+    for (const mood of PRESET_MOODS) {
+      if (!existing.includes(mood.toLowerCase())) {
+        await fetch("http://localhost:5000/moods", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name: mood }),
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Error seeding moods:", err);
+  }
+};
+
 function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
   const [artists, setArtists] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -62,44 +94,92 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
       .then(data => setSongs(data))
       .catch(err => console.error("Failed to fetch songs:", err));
 
-    if (isAuthenticated) {
-      fetchWithToken("http://localhost:5000/genres", setGenres);
-      fetchWithToken("http://localhost:5000/artists", setArtists);
-      fetchWithToken("http://localhost:5000/moods", setMoods);
-    }
+    const loadData = async () => {
+      if (isAuthenticated) {
+        await seedMoodsIfMissing();
+
+        await fetchWithToken("http://localhost:5000/moods", (fetchedMoods) => {
+          const uniqueMoods = [];
+          const seen = new Set();
+
+          for (const mood of fetchedMoods) {
+            const name = mood.name.toLowerCase();
+            if (!seen.has(name)) {
+              seen.add(name);
+              uniqueMoods.push(mood);
+            }
+          }
+
+          setMoods(uniqueMoods);
+        });
+
+        fetchWithToken("http://localhost:5000/genres", setGenres);
+        fetchWithToken("http://localhost:5000/artists", setArtists);
+      }
+    };
+
+    loadData();
   }, [isAuthenticated]);
 
   const handleAddToMood = async (songId) => {
-    if (!selectedMood) {
-      alert("Please select a mood first.");
-      return;
-    }
+  if (!selectedMood) {
+    alert("Please select a mood first.");
+    return;
+  }
 
-    try {
-      const res = await fetch(`http://localhost:5000/moods/${selectedMood.id}/songs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ song_id: songId }),
-      });
+  try {
+    const res = await fetch(`http://localhost:5000/moods/${selectedMood.id}/songs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ song_id: songId }),
+    });
 
-      if (!res.ok) throw new Error("Failed to add song");
-      alert(`Song added to ${selectedMood.name} mood`);
-    } catch (err) {
-      console.error("Error adding song to mood:", err);
-      alert("Failed to add song to mood.");
-    }
-  };
+    if (!res.ok) throw new Error("Failed to add song");
+
+    alert(`Song added to ${selectedMood.name} mood`);
+
+    const data = await res.json();
+    console.log("Add song response:", data)
+
+    //Refetch moods after adding
+    await fetchWithToken("http://localhost:5000/moods", (fetchedMoods) => {
+      //setMoods(uniqueMoods);
+      const uniqueMoods = [];
+      const seen = new Set();
+
+      for (const mood of fetchedMoods) {
+        const name = mood.name.toLowerCase();
+        if (!seen.has(name)) {
+          seen.add(name);
+          uniqueMoods.push(mood);
+        }
+      }
+
+      console.log("Fetched moods:", fetchedMoods);
+      setMoods(uniqueMoods);
+    });
+
+  } catch (err) {
+    console.error("Error adding song:", err);
+    alert("Failed to add song to mood.");
+  }
+};
+
 
   return (
     <main className="main-content">
       {isAuthenticated && (
         <MoodButtons moods={moods} onSelectMood={setSelectedMood} />
       )}
-      //
-      <SongSection songs={songs} moods={moods} handleAddToMood={handleAddToMood} selectedMood={selectedMood} />
+      <SongSection 
+        songs={songs}
+        moods={moods}
+        handleAddToMood={handleAddToMood}
+        selectedMood={selectedMood}
+      />
       <ArtistSection artists={artists} />
       <GenreSection genres={genres} />
     </main>
@@ -111,9 +191,10 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
   const [selectedMood, setSelectedMood] = useState(null);
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = async () => {
     setIsAuthenticated(true);
     setAuthModalVisible(false);
+    await seedMoodsIfMissing();
   };
 
   const handleLogout = () => {

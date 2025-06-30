@@ -5,7 +5,6 @@ import "./SongSection.css";
 const SongSection = ({ songs, moods }) => {
   const scrollRef = useRef();
   const fallbackImage = "https://via.placeholder.com/150?text=No+Image";
-
   const [selectedMoodBySong, setSelectedMoodBySong] = useState({});
 
   const scroll = (direction) => {
@@ -64,7 +63,6 @@ const SongSection = ({ songs, moods }) => {
                 onError={(e) => (e.target.src = fallbackImage)}
               />
               <p className="song-title">{song.title}</p>
-              <p className="song-duration">{song.duration}s</p>
 
               {song.preview_url ? (
                 <audio controls>
@@ -80,9 +78,9 @@ const SongSection = ({ songs, moods }) => {
                 onChange={(e) => handleMoodChange(song.id, e.target.value)}
               >
                 <option value="">Select mood</option>
-                {moods.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
+                {moods.map((mood) => (
+                  <option key={mood.id} value={mood.id}>
+                    {mood.name}
                   </option>
                 ))}
               </select>

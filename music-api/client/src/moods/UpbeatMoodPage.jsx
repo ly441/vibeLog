@@ -9,7 +9,7 @@ const UpbeatMoodPage = () => {
 
   
   useEffect(() => {
-    const fetchMoods = async () => {
+    const fetchUpbeatMoods = async () => {
       try {
         const res = await fetch("http://localhost:5000/moods", {
           headers: {
@@ -18,8 +18,8 @@ const UpbeatMoodPage = () => {
         });
         if (!res.ok) throw new Error("Failed to fetch moods");
         const moods = await res.json();
+        const upbeat = moods.find((m) => m.name.toLowerCase() === "Upbeat");
 
-        const upbeat = moods.find((m) => m.name.toLowerCase() === "upbeat");
         if (upbeat) {
           setMoodId(upbeat.id);
         } else {
@@ -30,7 +30,7 @@ const UpbeatMoodPage = () => {
         setError("Error fetching moods");
       }
     };
-    fetchMoods();
+    fetchUpbeatMoods();
   }, []);
 
   

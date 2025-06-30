@@ -25,6 +25,7 @@ flask-cors = "*"
 psycopg2-binary = "*"
 requests = "*"
 python-dotenv = "*"
+faker = "*"
 
 [dev-packages]
 

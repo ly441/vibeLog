@@ -3,16 +3,17 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from server.app import create_app
 from server.db.database import db
+from server.app import create_app
+from server.models.songs import Song
 from server.models.user import User
 from server.models.mood import Mood
 from server.models.genre import Genre
 from server.models.artist import Artist
 from server.models.music import Music
-from server.models.songs import Song
 from services.spotify_service import SpotifyService
+from server.models.mood import Mood, mood_song 
+
 
 from faker import Faker
 import random
@@ -121,6 +122,23 @@ def seed_songs(moods, music):
         ))
     return songs
 
+def link_songs_to_moods():
+    from server.models.mood import Mood
+    from server.models.songs import Song
+    from server.db.database import db
+
+    moods = Mood.query.all()
+    songs = Song.query.limit(20).all()
+
+    for mood in moods:
+        for song in songs:
+            if song not in mood.songs:
+                mood.songs.append(song)
+        print(f"Linked {len(mood.songs)} songs to mood: {mood.name}")
+
+    db.session.commit()
+
+
 
 def seed_database():
     app = create_app()
@@ -160,12 +178,8 @@ def seed_database():
         db.session.commit()
 
         print("Linking songs to moods...")
-        for song in songs:
-            random_moods = random.sample(moods, k=random.randint(1, 3))  # Link to 1–3 moods
-            for mood in random_moods:
-                mood.songs.append(song)
+        link_songs_to_moods()
 
-        db.session.commit()  # Commit mood-song associations
 
         print(f"""
         Database seeded successfully!
@@ -175,6 +189,8 @@ def seed_database():
         - Music: {len(music)}
         - Moods: {len(moods)}
         - Songs: {len(songs)}
+
+
         """)
 
 if __name__ == "__main__":
