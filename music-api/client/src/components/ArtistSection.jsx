@@ -15,6 +15,7 @@ const ArtistSection = ({ artists }) => {
     }
   };
 
+
   return (
     <section className="artist-section">
       <h3>Popular Artists</h3>

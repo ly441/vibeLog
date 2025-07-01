@@ -90,15 +90,17 @@ def seed_music(artists, genres):
 def seed_moods(users):
     moods = []
     for user in users:
-        for mood in PRESET_MOODS:
-            moods.append(Mood(
-                user_id=user.id,
-                name=mood,
-                intensity=random.randint(1, 10),
-                description=fake.sentence(),
-                created_at=fake.date_time_between(start_date='-30d', end_date='now')
-            ))
+        if user.id == 6:  # or however you're ensuring this is the logged-in user
+            for mood in PRESET_MOODS:
+                moods.append(Mood(
+                    user_id=user.id,
+                    name=mood,
+                    intensity=random.randint(1, 10),
+                    description=fake.sentence(),
+                    created_at=fake.date_time_between(start_date='-30d', end_date='now')
+                ))
     return moods
+
 
 def seed_songs(moods, music):
     songs = []

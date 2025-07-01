@@ -12,4 +12,6 @@ class Music(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), nullable=False)
     genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'))
     spotify_id = db.Column(db.String(100))
-    songs = db.relationship('Song', backref='music', lazy=True)
+
+    
+    songs = db.relationship('Song', back_populates='music')

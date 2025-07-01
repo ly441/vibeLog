@@ -1,8 +1,7 @@
-# server/models/mood.py
 from server.db.database import db
 from datetime import datetime
 
-# Join table defined OUTSIDE the Mood class
+# Join table
 mood_song = db.Table(
     'mood_song',
     db.Column('mood_id', db.Integer, db.ForeignKey('moods.id'), primary_key=True),
@@ -19,4 +18,4 @@ class Mood(db.Model):
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    songs = db.relationship('Song', secondary=mood_song, backref='moods')
+    songs = db.relationship('Song', secondary=mood_song, back_populates='moods')

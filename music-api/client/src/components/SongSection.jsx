@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import "./SongSection.css";
 
+
 const SongSection = ({ songs, moods }) => {
   const scrollRef = useRef();
   const fallbackImage = "https://via.placeholder.com/150?text=No+Image";
@@ -77,8 +78,8 @@ const SongSection = ({ songs, moods }) => {
                 value={selectedMoodBySong[song.id] || ""}
                 onChange={(e) => handleMoodChange(song.id, e.target.value)}
               >
-                <option value="">Select mood</option>
-                {moods.map((mood) => (
+                <option value="">Add to mood</option>
+                {Array.isArray(moods) && moods.map((mood) => (
                   <option key={mood.id} value={mood.id}>
                     {mood.name}
                   </option>

@@ -33,10 +33,14 @@ const SongsPage = () => {
       ) : (
         <ul className="songs-list">
           {songs.map((song) => (
-            <li key={song.id} 
-            
-            
-            className="song-card">
+            <li key={song.id} className="song-card">
+              {song.image_url && (
+                <img
+                src={song.image_url}
+                alt={song.title}
+                className="song-image"
+                />
+              )}
               <strong>{song.title}</strong> — {song.duration}s
               {song.preview_url && (
                 <audio controls src={song.preview_url}></audio>

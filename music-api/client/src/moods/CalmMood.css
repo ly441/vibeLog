@@ -1,0 +1,17 @@
+.mood-songs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.song-card {
+  background: #222;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  width: 200px;
+  text-align: center;
+}
+.song-image {
+  border-radius: 5px;
+}
