@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
+  base: "/", // this is important for Vercel deployments
   plugins: [react()],
   server: {
     host: true,
