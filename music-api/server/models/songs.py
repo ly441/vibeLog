@@ -13,7 +13,10 @@ class Song(db.Model):
     mood_id = db.Column(db.Integer, db.ForeignKey('moods.id'))
     genre_id = db.Column(db.Integer, db.ForeignKey('genres.id'))
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
+    mood_id = db.Column(db.Integer, db.ForeignKey('moods.id'))
     spotify_id = db.Column(db.String(100))
+    preview_url = db.Column(db.String)
+    image_url = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     
@@ -21,4 +24,4 @@ class Song(db.Model):
     db.relationship('Mood', backref='songs', lazy=True)
     db.relationship('Genre', backref='songs', lazy=True)
     db.relationship('Artist', backref='songs', lazy=True)
-    
+    db.relationship('Mood', backref='songs', lazy=True)

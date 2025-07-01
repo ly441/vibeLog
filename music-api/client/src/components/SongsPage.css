@@ -1,0 +1,14 @@
+.songs-page {
+  padding: 2rem;
+  text-align: center;
+}
+
+.songs-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}

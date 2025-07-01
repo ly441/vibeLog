@@ -1,0 +1,148 @@
+.song-section {
+  padding: 2rem;
+  color: white;
+}
+
+.song-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.song-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+
+.song-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.song-duration {
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin-bottom: 0.5rem;
+}
+
+.song-audio {
+  width: 100%;
+}
+
+.no-preview {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #777;
+}
+/* Song scroll container */
+.song-list-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Scrollable song list */
+.song-list {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 1rem;
+  padding: 1rem 2rem;
+}
+
+.song-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each song card */
+.song-card {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  flex: 0 0 auto;
+  width: 200px;
+  text-align: center;
+}
+
+.song-title {
+  font-weight: normal;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.song-duration {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 0.5rem;
+}
+
+/* Arrows */
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.arrow-left {
+  left: 0.5rem;
+}
+
+.arrow-right {
+  right: 0.5rem;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .song-card {
+    width: 150px;
+    padding: 0.75rem;
+  }
+
+  .arrow-button {
+    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
+  }
+}
+.song-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.2rem;
+}
+.add-button {
+  margin-top: 5px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+.add-to-mood-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 5px;
+  color: limegreen;
+}
+

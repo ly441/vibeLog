@@ -1,0 +1,66 @@
+/* src/components/Navbar.css */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1f1f1f;
+  padding: 1rem 2rem;
+  color: #ffffff;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ff88;
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #2c2c2c;
+  color: #fff;
+}
+
+.auth-button button {
+  background-color: rgb(67, 66, 66);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-button button:hover {
+  background-color: gray;
+}
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #1db954;
+}
+
+.logo-link {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
