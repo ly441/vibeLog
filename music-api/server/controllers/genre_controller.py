@@ -5,21 +5,9 @@ from server.db.database import db
 
 genre_bp = Blueprint('genre', __name__)
 
-@genre_bp.route('/genres', methods=['GET'])
-@jwt_required()
-def get_genres():
-    genres = Genre.query.all()
-    return jsonify([{
-        'id': g.id,
-        'name': g.name
-    } for g in genres]), 200
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
-from server.models.genre import Genre
-from server.db.database import db
-from sqlalchemy.exc import SQLAlchemyError
+    
 
-genre_bp = Blueprint('genre', __name__)
+
 
 # Get all genres
 @genre_bp.route('/genres', methods=['GET'])
@@ -56,7 +44,7 @@ def create_genre():
             'id': new_genre.id,
             'name': new_genre.name
         }), 201
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -104,7 +92,7 @@ def update_genre(genre_id):
             'id': genre.id,
             'name': genre.name
         }), 200
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -120,7 +108,7 @@ def delete_genre(genre_id):
         db.session.delete(genre)
         db.session.commit()
         return jsonify({'message': 'Genre deleted successfully'}), 200
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.session.rollback()
         # Handle potential foreign key constraint violations
         if "foreign key constraint" in str(e).lower():

@@ -36,6 +36,7 @@ def create_song():
 # GET all songs
 @songs_bp.route('/songs', methods=['GET'])
 def get_all_songs():
+    
     songs = Song.query.all()
     return jsonify([
         {
@@ -46,7 +47,8 @@ def get_all_songs():
             'preview_url': song.preview_url,
             'image_url': song.image_url,
         } for song in songs
-    ])
+    ]),200
+    
 
 # GET single song
 @songs_bp.route('/songs/<int:id>', methods=['GET'])

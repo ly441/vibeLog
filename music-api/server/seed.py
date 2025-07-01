@@ -4,7 +4,8 @@
 from server.db.database import db
 from server.app import create_app
 
-import sys
+
+
 
 
 import os
@@ -318,6 +319,5 @@ if __name__ == '__main__':
     seed_database()
     
 
-if __name__ == "__main__":
-    seed_database()
+
 
