@@ -1,15 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.models.mood import Mood
-
-from server.models.songs import Song
-from server.models.music import Music
-
 from server.db.database import db
 
 mood_bp = Blueprint('mood', __name__)
-song_bp = Blueprint('song', __name__)
-music_bp = Blueprint('music', __name__)
 
 @mood_bp.route('/moods', methods=['GET'])
 @jwt_required()
@@ -25,9 +19,10 @@ def get_moods():
         'song_count': len(m.songs)
     } for m in moods]), 200
 
+
 @mood_bp.route('/moods', methods=['POST'])
 @jwt_required()
-def create_mood():
+def toggle_mood():
     user_id = get_jwt_identity()
     data = request.get_json()
     
@@ -45,46 +40,48 @@ def create_mood():
         'name': mood.name,
         'message': 'Mood created successfully'
     }), 201
-@song_bp.route('/songs', methods=['POST'])
+
+
+@mood_bp.route('/moods/<int:id>', methods=['GET'])
 @jwt_required()
-def create_song():
+def get_mood(id):
     user_id = get_jwt_identity()
-    data = request.get_json()
-
-    song = Song(
-        user_id=user_id,
-        title=data['title'],
-        artist=data['artist'],
-        album=data['album'],
-        genre=data['genre']
-    )
-    db.session.add(song)
-    db.session.commit()
-
+    mood = Mood.query.filter_by(user_id=user_id, id=id).first()
+    if not mood:
+        return jsonify({'message': 'Mood not found'}), 404
     return jsonify({
-        'id': song.id,
-        'title': song.title,
-        'message': 'Song created successfully'
-    }), 201
+        'id': mood.id,
+        'name': mood.name,
+        'intensity': mood.intensity,
+        'description': mood.description,
+        'created_at': mood.created_at.isoformat(),
+        'song_count': len(mood.songs)
+    }), 200
 
-@music_bp.route('/music', methods=['POST'])
+@mood_bp.route('/moods/<int:id>', methods=['PUT'])
 @jwt_required()
-def create_music():
+def update_mood(id):
     user_id = get_jwt_identity()
+    mood = Mood.query.filter_by(user_id=user_id, id=id).first()
+    if not mood:
+        return jsonify({'message': 'Mood not found'}), 404
+
     data = request.get_json()
-
-    music = Music(
-        user_id=user_id,
-        title=data['title'],
-        artist=data['artist'],
-        album=data['album'],
-        genre=data['genre']
-    )
-    db.session.add(music)
+    mood.name = data.get('name', mood.name)
+    mood.intensity = data.get('intensity', mood.intensity)
+    mood.description = data.get('description', mood.description)
+    
     db.session.commit()
+    return jsonify({'message': 'Mood updated successfully'}), 200
 
-    return jsonify({
-        'id': music.id,
-        'title': music.title,
-        'message': 'Music created successfully'
-    }), 201
+@mood_bp.route('/moods/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_mood(id):
+    user_id = get_jwt_identity()
+    mood = Mood.query.filter_by(user_id=user_id, id=id).first()
+    if not mood:
+        return jsonify({'message': 'Mood not found'}), 404
+    
+    db.session.delete(mood)
+    db.session.commit()
+    return jsonify({'message': 'Mood deleted successfully'}), 200    

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from server.models.music import Music
 from server.models.artist import Artist
 from server.models.genre import  Genre
@@ -9,8 +9,6 @@ from services.spotify_service import SpotifyService
 spotify = SpotifyService
 
 #from services.spotify_service import SpotifyService
-
-
 
 music_bp = Blueprint('music', __name__)
 artist_bp = Blueprint('artist', __name__)
@@ -53,7 +51,7 @@ def search_music():
     
     if not local_results:
         # Fall back to Spotify if no local results
-        spotify_results = Spotify.search_track(query)
+        spotify_results = spotify.search_track(query)
         return jsonify(spotify_results), 200
     
     return jsonify([{
@@ -91,3 +89,62 @@ def search_spotify():
 
     results = SpotifyService.search_track(query)
     return jsonify(results), 200
+# ======================
+# Music CRUD Operations
+# ======================
+@music_bp.route('/music', methods=['GET'])
+@jwt_required()
+def get_music():
+    user_id = get_jwt_identity()
+    music = Music.query.filter_by(user_id=user_id).all()
+    return jsonify([{
+        'id': m.id,
+        'title': m.title,
+        'artist': m.artist,
+        'album': m.album,
+        'genre': m.genre
+    } for m in music]), 200
+
+@music_bp.route('/music/<int:id>', methods=['GET'])
+@jwt_required()
+def get_music_entry(id):
+    user_id = get_jwt_identity()
+    music = Music.query.filter_by(user_id=user_id, id=id).first()
+    if not music:
+        return jsonify({'message': 'Music entry not found'}), 404
+    return jsonify({
+        'id': music.id,
+        'title': music.title,
+        'artist': music.artist,
+        'album': music.album,
+        'genre': music.genre
+    }), 200
+
+@music_bp.route('/music/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_music(id):
+    user_id = get_jwt_identity()
+    music = Music.query.filter_by(user_id=user_id, id=id).first()
+    if not music:
+        return jsonify({'message': 'Music entry not found'}), 404
+
+    data = request.get_json()
+    music.title = data.get('title', music.title)
+    music.artist = data.get('artist', music.artist)
+    music.album = data.get('album', music.album)
+    music.genre = data.get('genre', music.genre)
+    
+    db.session.commit()
+    return jsonify({'message': 'Music updated successfully'}), 200
+
+@music_bp.route('/music/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_music(id):
+    user_id = get_jwt_identity()
+    music = Music.query.filter_by(user_id=user_id, id=id).first()
+    if not music:
+        return jsonify({'message': 'Music entry not found'}), 404
+    
+    db.session.delete(music)
+    db.session.commit()
+    return jsonify({'message': 'Music deleted successfully'}), 200

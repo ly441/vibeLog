@@ -1,0 +1,39 @@
+.artist-detail {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e2f;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.artist-detail h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.artist-detail img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid #444;
+}
+
+.artist-detail p {
+  font-size: 1rem;
+  color: #ccc;
+}
+.artist-detail {
+  padding: 2rem;
+  color: white;
+}
+
+.artist-detail img.artist-image {
+  max-width: 200px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
