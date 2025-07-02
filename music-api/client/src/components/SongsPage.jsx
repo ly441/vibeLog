@@ -6,14 +6,14 @@ const SongsPage = () => {
   const [songs, setSongs] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/songs")
+    fetch("/songs")
       .then((res) => res.json())
       .then(setSongs)
       .catch((err) => console.error("Failed to fetch songs", err));
   }, []);
 
   const handleUpdate = async (songId, newTitle) => {
-  await fetch(`http://localhost:5000/songs/${songId}`, {
+  await fetch(`/songs/${songId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

@@ -36,7 +36,7 @@ const GenrePage = () => {
   const [genres, setGenres] = useState([]);
 
   useEffect(() => {
-    fetchWithToken("http://localhost:5000/genres", setGenres);
+    fetchWithToken("/genres", setGenres);
   }, []);
 
   return (

@@ -1,3 +1,2 @@
 # music-api/env/
-env/
-.vercel
+.env

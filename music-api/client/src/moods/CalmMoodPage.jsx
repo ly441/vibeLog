@@ -11,7 +11,7 @@ const CalmMoodPage = () => {
       if (!token) return;
 
       try {
-        const res = await fetch("http://localhost:5000/moods", {
+        const res = await fetch("/moods", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -32,7 +32,7 @@ const CalmMoodPage = () => {
     const fetchSongs = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch(`http://localhost:5000/moods/${mood.id}/songs`, {
+        const res = await fetch(`/moods/${mood.id}/songs`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -50,7 +50,7 @@ const CalmMoodPage = () => {
   const handleDelete = async (songId) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:5000/moods/${mood.id}/songs/${songId}`, {
+      const res = await fetch(`/moods/${mood.id}/songs/${songId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

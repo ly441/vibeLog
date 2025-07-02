@@ -34,7 +34,7 @@ const ArtistsPage = () => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
-    fetchWithToken("http://localhost:5000/artists", setArtists);
+    fetchWithToken("/artists", setArtists);
   }, []);
 
   const fallbackImage = "https://via.placeholder.com/200x200?text=No+Image";

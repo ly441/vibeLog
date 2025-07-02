@@ -41,7 +41,7 @@ const MoodButtons = ({ onSelectMood }) => {
 
   useEffect(() => {
     const loadMoods = async () => {
-      const data = await fetchWithToken("http://localhost:5000/moods");
+      const data = await fetchWithToken("/moods");
       setSelectedMoods(data.map((m) => m.name));
     };
     loadMoods();
@@ -49,10 +49,10 @@ const MoodButtons = ({ onSelectMood }) => {
 
   const toggleMood = async (moodName) => {
     // Toggle mood selection in backend
-    await fetchWithToken("http://localhost:5000/moods", "POST", { name: moodName });
+    await fetchWithToken("/moods", "POST", { name: moodName });
 
     // Fetch updated moods from backend
-    const updated = await fetchWithToken("http://localhost:5000/moods");
+    const updated = await fetchWithToken("/moods");
     setSelectedMoods(updated.map((m) => m.name));
 
     // Select full mood object to pass

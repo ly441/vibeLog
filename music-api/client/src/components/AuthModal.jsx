@@ -11,7 +11,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isLogin ? "/login" : "/signup";
-    const url = `http://localhost:5000${endpoint}`;
+    const url = `${endpoint}`;
 
     const payload = isLogin
       ? { username: formData.username, password: formData.password }

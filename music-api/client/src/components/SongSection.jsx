@@ -27,7 +27,7 @@ const SongSection = ({ songs, moods }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/moods/${moodId}/songs`, {
+      const response = await fetch(`/moods/${moodId}/songs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -58,7 +58,7 @@ const seedMoodsIfMissing = async () => {
   if (!token) return;
 
   try {
-    const res = await fetch("http://localhost:5000/moods", {
+    const res = await fetch("/moods", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -69,7 +69,7 @@ const seedMoodsIfMissing = async () => {
 
     for (const mood of PRESET_MOODS) {
       if (!existing.includes(mood.toLowerCase())) {
-        await fetch("http://localhost:5000/moods", {
+        await fetch("/moods", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
   const [moods, setMoods] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/songs")
+    fetch("/songs")
       .then(res => res.json())
       .then(data => setSongs(data))
       .catch(err => console.error("Failed to fetch songs:", err));
@@ -100,7 +100,7 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
       if (isAuthenticated) {
         await seedMoodsIfMissing();
 
-        await fetchWithToken("http://localhost:5000/moods", (fetchedMoods) => {
+        await fetchWithToken("/moods", (fetchedMoods) => {
           const uniqueMoods = [];
           const seen = new Set();
 
@@ -115,8 +115,8 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
           setMoods(uniqueMoods);
         });
 
-        fetchWithToken("http://localhost:5000/genres", setGenres);
-        fetchWithToken("http://localhost:5000/artists", setArtists);
+        fetchWithToken("/genres", setGenres);
+        fetchWithToken("/artists", setArtists);
       }
     };
 
@@ -130,7 +130,7 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/moods/${selectedMood.id}/songs`, {
+    const res = await fetch(`/moods/${selectedMood.id}/songs`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -152,7 +152,7 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
     
 
     //Refetch moods after adding
-    await fetchWithToken("http://localhost:5000/moods", (fetchedMoods) => {
+    await fetchWithToken("/moods", (fetchedMoods) => {
       //setMoods(uniqueMoods);
       const uniqueMoods = [];
       const seen = new Set();

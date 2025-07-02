@@ -10,7 +10,7 @@ const ChillMoodPage = () => {
   useEffect(() => {
     const fetchChillMood = async () => {
       try {
-        const res = await fetch("http://localhost:5000/moods", {
+        const res = await fetch("/moods", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -41,7 +41,7 @@ const ChillMoodPage = () => {
 
     const fetchSongs = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/moods/${mood.id}/songs`, {
+        const res = await fetch(`/moods/${mood.id}/songs`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -63,7 +63,7 @@ const ChillMoodPage = () => {
   // Delete song
   const handleDelete = async (songId) => {
     try {
-      const res = await fetch(`http://localhost:5000/moods/${mood.id}/songs/${songId}`, {
+      const res = await fetch(`/moods/${mood.id}/songs/${songId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

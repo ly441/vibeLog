@@ -8,7 +8,7 @@ const MoodSongsSection = ({ mood }) => {
       if (!mood) return;
 
       try {
-        const res = await fetch(`http://localhost:5000/moods/${mood.id}/songs`, {
+        const res = await fetch(`/moods/${mood.id}/songs`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

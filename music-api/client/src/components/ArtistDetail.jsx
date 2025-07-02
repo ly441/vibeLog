@@ -9,7 +9,7 @@ const ArtistDetail = () => {
   const [songs, setSongs] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/artists/${id}`)
+    fetch(`/artists/${id}`)
       .then((res) => res.json())
       .then(data => {
         console.log("Artist details:", data);
@@ -17,7 +17,7 @@ const ArtistDetail = () => {
       })
       .catch(err => console.error("Failed to fetch artist", err));
 
-    fetch(`http://localhost:5000/songs/artist/${id}`)
+    fetch(`/artist/${id}`)
       .then((res) => res.json())
       .then(data => {
         console.log("Songs for artist:", data);
