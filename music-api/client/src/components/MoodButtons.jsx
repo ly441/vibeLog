@@ -1,3 +1,5 @@
+const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
 // src/components/MoodButtons.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +43,7 @@ const MoodButtons = ({ onSelectMood }) => {
 
   useEffect(() => {
     const loadMoods = async () => {
-      const data = await fetchWithToken("/moods");
+      const data = await fetchWithToken("${API}/moods");
       setSelectedMoods(data.map((m) => m.name));
     };
     loadMoods();
@@ -49,10 +51,10 @@ const MoodButtons = ({ onSelectMood }) => {
 
   const toggleMood = async (moodName) => {
     // Toggle mood selection in backend
-    await fetchWithToken("/moods", "POST", { name: moodName });
+    await fetchWithToken("${API}/moods", "POST", { name: moodName });
 
     // Fetch updated moods from backend
-    const updated = await fetchWithToken("/moods");
+    const updated = await fetchWithToken("${API}/moods");
     setSelectedMoods(updated.map((m) => m.name));
 
     // Select full mood object to pass
@@ -62,7 +64,7 @@ const MoodButtons = ({ onSelectMood }) => {
     }
 
     // Navigate to mood page
-    navigate(`/moods/${moodName.toLowerCase()}`);
+    navigate(`${API}/moods/${moodName.toLowerCase()}`);
   };
 
   return (

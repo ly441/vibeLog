@@ -1,3 +1,5 @@
+const API = import.meta.env.VITE_BACKEND_URL;
+
 import { useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import "./SongSection.css";
@@ -27,7 +29,7 @@ const SongSection = ({ songs, moods }) => {
     }
 
     try {
-      const response = await fetch(`/moods/${moodId}/songs`, {
+      const response = await fetch(`${API}/moods/${moodId}/songs`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +91,7 @@ const SongSection = ({ songs, moods }) => {
               <button
                 className="add-button"
                 title="Add to selected mood"
-                onClick={() => handleAddToMood(song.id)}
+                onClick={() => handleAddToMood(song.id, selectedMoodBySong[song.id])}
               >
                 <FaPlus />
               </button>

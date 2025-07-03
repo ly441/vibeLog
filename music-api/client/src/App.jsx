@@ -7,7 +7,7 @@ import MoodButtons from "./components/MoodButtons";
 import ArtistSection from "./components/ArtistSection";
 import GenreSection from "./components/GenreSection";
 import AuthModal from "./components/AuthModal";
-import SongSection from "./components/SongSection"; 
+import SongSection from "./components/SongSection";
 import ArtistDetail from "./components/ArtistDetail";
 import ArtistsPage from "./components/ArtistPage";
 import GenrePage from "./components/GenrePage";
@@ -23,66 +23,8 @@ import MoodyMoodPage from "./moods/MoodyMoodPage";
 import UpbeatMoodPage from "./moods/UpbeatMoodPage";
 import ReflectiveMoodPage from "./moods/ReflectiveMoodPage";
 
-
-const PRESET_MOODS = [
-  "Happy", "Sad", "Energetic", "Calm", "Angry",
-  "Romantic", "Moody", "Chill", "Upbeat", "Reflective"
-];
-
-const fetchWithToken = async (url, setter) => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  try {
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`HTTP ${res.status}: ${errorText}`);
-    }
-
-    const data = await res.json();
-    console.log("Add song response:", data);
-    setter(data);
-  } catch (err) {
-    console.error(`Error fetching from ${url}:`, err.message);
-  }
-};
-
-const seedMoodsIfMissing = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  try {
-    const res = await fetch("/moods", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!res.ok) return;
-
-    const moods = await res.json();
-    const existing = moods.map((m) => m.name.toLowerCase());
-
-    for (const mood of PRESET_MOODS) {
-      if (!existing.includes(mood.toLowerCase())) {
-        await fetch("/moods", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ name: mood }),
-        });
-      }
-    }
-  } catch (err) {
-    console.error("Error seeding moods:", err);
-  }
-};
+const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+console.log("API:", API);
 
 function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
   const [artists, setArtists] = useState([]);
@@ -91,20 +33,31 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
   const [moods, setMoods] = useState([]);
 
   useEffect(() => {
-    fetch("/songs")
-      .then(res => res.json())
-      .then(data => setSongs(data))
-      .catch(err => console.error("Failed to fetch songs:", err));
+    fetch(`${API}/songs`)
+      .then((res) => res.json())
+      .then(setSongs)
+      .catch((err) => console.error("Failed to fetch songs:", err));
 
-    const loadData = async () => {
-      if (isAuthenticated) {
-        await seedMoodsIfMissing();
+    if (isAuthenticated) {
+      Promise.all([
+        fetch(`${API}/moods`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
+        fetch(`${API}/genres`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
+        fetch(`${API}/artists`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
+      ])
+        .then(async ([moodsRes, genresRes, artistsRes]) => {
+          const moodsData = await moodsRes.json();
+          const genresData = await genresRes.json();
+          const artistsData = await artistsRes.json();
 
-        await fetchWithToken("/moods", (fetchedMoods) => {
           const uniqueMoods = [];
           const seen = new Set();
-
-          for (const mood of fetchedMoods) {
+          for (const mood of moodsData) {
             const name = mood.name.toLowerCase();
             if (!seen.has(name)) {
               seen.add(name);
@@ -113,80 +66,21 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
           }
 
           setMoods(uniqueMoods);
-        });
-
-        fetchWithToken("/genres", setGenres);
-        fetchWithToken("/artists", setArtists);
-      }
-    };
-
-    loadData();
+          setGenres(genresData);
+          setArtists(artistsData);
+        })
+        .catch((err) => console.error("Failed to fetch protected data:", err));
+    }
   }, [isAuthenticated]);
-
-  const handleAddToMood = async (songId, moodId) => {
-  if (!moodId) {
-    alert("Please select a mood from dropdown.");
-    return;
-  }
-
-  try {
-    const res = await fetch(`/moods/${selectedMood.id}/songs`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ song_id: songId }),
-    });
-
-    if (!res.ok) throw new Error("Failed to add song");
-    alert("Song added to mood");
-
-    
-    alert(`Song added to ${selectedMood.name} mood`);
-
-    const data = await res.json();
-    console.log("Add song response:", data)
-    //trigger refetch of songs
-    setMoodRefreshKey(prev => + 1);
-    
-
-    //Refetch moods after adding
-    await fetchWithToken("/moods", (fetchedMoods) => {
-      //setMoods(uniqueMoods);
-      const uniqueMoods = [];
-      const seen = new Set();
-
-      for (const mood of fetchedMoods) {
-        const name = mood.name.toLowerCase();
-        if (!seen.has(name)) {
-          seen.add(name);
-          uniqueMoods.push(mood);
-        }
-      }
-
-      console.log("Fetched moods:", fetchedMoods);
-      setMoods(uniqueMoods);
-    });
-
-  } catch (err) {
-    console.error("Error adding song:", err);
-    alert("Failed to add song to mood.");
-  }
-};
-
 
   return (
     <main className="main-content">
       {isAuthenticated && (
         <MoodButtons moods={moods} onSelectMood={setSelectedMood} />
       )}
-
-      <SongSection 
+      <SongSection
         songs={songs}
         moods={moods}
-        handleAddToMood={handleAddToMood}
-        selectedMood={selectedMood}
       />
       <ArtistSection artists={artists} />
       <GenreSection genres={genres} />
@@ -195,15 +89,15 @@ function HomePage({ isAuthenticated, selectedMood, setSelectedMood }) {
 }
 
 function App() {
-  const [moodRefreshKey, setMoodRefreshKey] = useState(0);
   const [authModalVisible, setAuthModalVisible] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
   const [selectedMood, setSelectedMood] = useState(null);
 
-  const handleLoginSuccess = async () => {
+  const handleLoginSuccess = () => {
     setIsAuthenticated(true);
     setAuthModalVisible(false);
-    await seedMoodsIfMissing();
   };
 
   const handleLogout = () => {
@@ -236,17 +130,16 @@ function App() {
           <Route path="/artist/:id" element={<ArtistDetail />} />
           <Route path="/artists" element={<ArtistsPage />} />
           <Route path="/genres" element={<GenrePage />} />
+          <Route path="/moods/calm" element={<CalmMoodPage />} />
+          <Route path="/moods/energetic" element={<EnergeticMoodPage />} />
           <Route path="/moods/sad" element={<SadMoodPage />} />
           <Route path="/moods/happy" element={<HappyMoodPage />} />
-          <Route path="/moods/chill" element={<ChillMoodPage />} />
           <Route path="/moods/angry" element={<AngryMoodPage />} />
+          <Route path="/moods/chill" element={<ChillMoodPage />} />
           <Route path="/moods/romantic" element={<RomanticMoodPage />} />
           <Route path="/moods/moody" element={<MoodyMoodPage />} />
           <Route path="/moods/upbeat" element={<UpbeatMoodPage />} />
           <Route path="/moods/reflective" element={<ReflectiveMoodPage />} />
-          <Route path="/moods/energetic" element={<EnergeticMoodPage />} />
-          <Route path="/moods/calm" element={<CalmMoodPage refreshKey={moodRefreshKey} />} />
-
         </Routes>
 
         {authModalVisible && (
