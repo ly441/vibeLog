@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_BACKEND_URL;
+const API = import.meta.env.VITE_BACKEND_URL || '';
 
 import { useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";

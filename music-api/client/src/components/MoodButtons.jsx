@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const API = import.meta.env.VITE_BACKEND_URL || "";
 
 // src/components/MoodButtons.jsx
 import { useEffect, useState } from "react";
